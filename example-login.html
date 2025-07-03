@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Playwright Basic</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 400px;
+            margin: 100px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .login-container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="email"], input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        input[type="checkbox"] {
+            margin-right: 8px;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        .links {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .links a {
+            color: #007bff;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+        .error-message {
+            color: #dc3545;
+            font-size: 14px;
+            margin-top: 10px;
+            display: none;
+        }
+        .loading-spinner {
+            display: none;
+            text-align: center;
+            margin-top: 10px;
+        }
+        .validation-error {
+            color: #dc3545;
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h1>Login</h1>
+        <form data-testid="login-form" id="loginForm">
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input 
+                    type="email" 
+                    id="email" 
+                    data-testid="email-input" 
+                    placeholder="Enter your email"
+                    required
+                >
+                <div class="validation-error" data-testid="email-validation"></div>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input 
+                    type="password" 
+                    id="password" 
+                    data-testid="password-input" 
+                    placeholder="Enter your password"
+                    required
+                >
+                <div class="validation-error" data-testid="password-validation"></div>
+            </div>
+            
+            <div class="checkbox-group">
+                <input type="checkbox" id="rememberMe" data-testid="remember-me-checkbox">
+                <label for="rememberMe">Remember me</label>
+            </div>
+            
+            <button type="submit" data-testid="login-button" id="loginButton">
+                Login
+            </button>
+            
+            <div class="error-message" data-testid="error-message" id="errorMessage"></div>
+            <div class="loading-spinner" data-testid="loading-spinner" id="loadingSpinner">
+                Logging in...
+            </div>
+        </form>
+        
+        <div class="links">
+            <a href="/forgot-password" data-testid="forgot-password-link">Forgot Password?</a>
+            <a href="/signup" data-testid="signup-link">Sign Up</a>
+        </div>
+    </div>
+
+    <script>
+        // Mock login functionality for demonstration
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const errorMessage = document.getElementById('errorMessage');
+            const loadingSpinner = document.getElementById('loadingSpinner');
+            
+            // Clear previous errors
+            errorMessage.style.display = 'none';
+            document.querySelector('[data-testid="email-validation"]').style.display = 'none';
+            document.querySelector('[data-testid="password-validation"]').style.display = 'none';
+            
+            // Basic validation
+            if (!email) {
+                document.querySelector('[data-testid="email-validation"]').textContent = 'Email is required';
+                document.querySelector('[data-testid="email-validation"]').style.display = 'block';
+                return;
+            }
+            
+            if (!password) {
+                document.querySelector('[data-testid="password-validation"]').textContent = 'Password is required';
+                document.querySelector('[data-testid="password-validation"]').style.display = 'block';
+                return;
+            }
+            
+            // Email format validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                document.querySelector('[data-testid="email-validation"]').textContent = 'Please enter a valid email address';
+                document.querySelector('[data-testid="email-validation"]').style.display = 'block';
+                return;
+            }
+            
+            // Show loading
+            loadingSpinner.style.display = 'block';
+            
+            // Simulate API call
+            setTimeout(() => {
+                loadingSpinner.style.display = 'none';
+                
+                // Mock authentication logic
+                if ((email === 'test@example.com' && password === 'ValidPassword123!') ||
+                    (email === 'admin@example.com' && password === 'AdminPassword123!')) {
+                    // Simulate successful login
+                    window.location.href = '/dashboard';
+                } else {
+                    // Show error message
+                    errorMessage.textContent = 'Invalid email or password';
+                    errorMessage.style.display = 'block';
+                }
+            }, 1000);
+        });
+        
+        // Enable/disable login button based on form state
+        function updateLoginButton() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const loginButton = document.getElementById('loginButton');
+            
+            loginButton.disabled = !email || !password;
+        }
+        
+        document.getElementById('email').addEventListener('input', updateLoginButton);
+        document.getElementById('password').addEventListener('input', updateLoginButton);
+        
+        // Initialize button state
+        updateLoginButton();
+    </script>
+</body>
+</html>

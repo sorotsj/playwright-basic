@@ -1,0 +1,106 @@
+{
+  "validUsers": {
+    "standardUser": {
+      "email": "test@example.com",
+      "password": "ValidPassword123!",
+      "name": "Test User",
+      "role": "user"
+    },
+    "adminUser": {
+      "email": "admin@example.com",
+      "password": "AdminPassword123!",
+      "name": "Admin User",
+      "role": "admin"
+    }
+  },
+  "invalidCredentials": {
+    "wrongEmail": {
+      "email": "wrong@example.com",
+      "password": "ValidPassword123!"
+    },
+    "wrongPassword": {
+      "email": "test@example.com",
+      "password": "WrongPassword123!"
+    },
+    "emptyFields": {
+      "emptyEmail": {
+        "email": "",
+        "password": "ValidPassword123!"
+      },
+      "emptyPassword": {
+        "email": "test@example.com",
+        "password": ""
+      },
+      "emptyBoth": {
+        "email": "",
+        "password": ""
+      }
+    },
+    "invalidFormats": {
+      "invalidEmail": {
+        "email": "invalid-email-format",
+        "password": "ValidPassword123!"
+      },
+      "shortPassword": {
+        "email": "test@example.com",
+        "password": "short"
+      }
+    }
+  },
+  "testScenarios": [
+    {
+      "name": "Valid login with standard user",
+      "credentials": {
+        "email": "test@example.com",
+        "password": "ValidPassword123!"
+      },
+      "expectedResult": "success",
+      "rememberMe": false
+    },
+    {
+      "name": "Valid login with remember me",
+      "credentials": {
+        "email": "test@example.com",
+        "password": "ValidPassword123!"
+      },
+      "expectedResult": "success",
+      "rememberMe": true
+    },
+    {
+      "name": "Admin user login",
+      "credentials": {
+        "email": "admin@example.com",
+        "password": "AdminPassword123!"
+      },
+      "expectedResult": "success",
+      "rememberMe": false
+    },
+    {
+      "name": "Invalid credentials",
+      "credentials": {
+        "email": "wrong@example.com",
+        "password": "WrongPassword123!"
+      },
+      "expectedResult": "error",
+      "expectedError": "Invalid email or password"
+    },
+    {
+      "name": "Empty email validation",
+      "credentials": {
+        "email": "",
+        "password": "ValidPassword123!"
+      },
+      "expectedResult": "validation_error",
+      "expectedError": "Email is required"
+    },
+    {
+      "name": "Empty password validation",
+      "credentials": {
+        "email": "test@example.com",
+        "password": ""
+      },
+      "expectedResult": "validation_error",
+      "expectedError": "Password is required"
+    }
+  ]
+}
